@@ -1,0 +1,63 @@
+POST http://localhost:8000/api/auth/register
+Content-Type: application/json
+
+{
+    "username": "huyen5",
+    "password":"huyen"
+}
+
+###
+POST http://localhost:8000/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "huyen5",
+    "password":"huyen"
+}
+
+###
+POST http://localhost:8000/api/group
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzlkNDllODE3YzU3YTBkYzQwZTFhOTQiLCJpYXQiOjE2NzEyNTg4NDN9.HgOnhtSd5SHWbacNZXd_vbOVI-8qnt1Fs8BZKjLjQ6A
+
+{
+  "name": "Nhóm giải tích 4",
+  "leader":"639d49e817c57a0dc40e1a94"
+}
+
+###
+PUT http://localhost:8000/api/group/639c8f9fc9c6bec52baf3719
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzljM2E0ZGM2NTk0MzBjOWM1NjU4NDYiLCJpYXQiOjE2NzEyMDIxNDl9.J9kly1axGre4ifXDBfkI5rHK_9U1iWj5_o-7lYQhJFQ
+
+{
+  "name": "Phần mềm 1",
+  "leader":"639d49e817c57a0dc40e1a94"
+}
+###
+
+GET http://localhost:8000/api/group
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzljM2E0ZGM2NTk0MzBjOWM1NjU4NDYiLCJpYXQiOjE2NzEyMDIxNDl9.J9kly1axGre4ifXDBfkI5rHK_9U1iWj5_o-7lYQhJFQ
+
+###
+
+DELETE http://localhost:8000/api/group/639c8ee9c9c6bec52baf3710
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzljM2E0ZGM2NTk0MzBjOWM1NjU4NDYiLCJpYXQiOjE2NzEyMDIxNDl9.J9kly1axGre4ifXDBfkI5rHK_9U1iWj5_o-7lYQhJFQ
+
+###
+POST http://localhost:8000/api/user
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzlkNDllODE3YzU3YTBkYzQwZTFhOTQiLCJpYXQiOjE2NzEyNTI1MTR9._4Q1OXybP2ZG54o-ugAcG9o-QOoa6cKgiR39_jlJqwk
+
+{
+  "name": "Nguyễn Ngọc Huyền",
+  "major": "TE34",
+  "studentNumber": "A43581",
+  "school": "Trường đại học Thăng Long",
+  "gmail": "ngochuyengiadinh4@gmail.com",
+  "phoneNumber": "0962319014"
+}
+###
+
+GET http://localhost:8000/api/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzlkNDllODE3YzU3YTBkYzQwZTFhOTQiLCJpYXQiOjE2NzEyNTI1MTR9._4Q1OXybP2ZG54o-ugAcG9o-QOoa6cKgiR39_jlJqwk
