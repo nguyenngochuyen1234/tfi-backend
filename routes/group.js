@@ -3,7 +3,7 @@ const router = express.Router()
 const verifyToken = require('../middleware/auth')
 
 const Group = require('../models/Group')
-const User = require('../models/User')
+// const User = require('../models/User')
 const Account = require('../models/Account')
 
 // @route GET api/group
@@ -54,10 +54,10 @@ router.post('/', verifyToken, async (req, res) => {
 		const newGroup = new Group({
 			name,leader,member:memberId
 		})
-
+//------------------------------------
 		const savedGroup = await newGroup.save()
 		for(let i=0;i<memberId.length;i++){
-			let user = await User.findOne({account:memberId[i]})
+			let user = await Account.findById(memberId[i])
 			await user.updateOne({ $push: { groupJoin: [savedGroup._id] } })
 		}
 		if (req.body.leader) {

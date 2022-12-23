@@ -14,7 +14,46 @@ const AccountSchema = new Schema({
     createAt:{
         type: Date,
         default: Date.now
-    }
+    },
+    name: {
+        type: String,
+        required: true,
+    },
+    major: {
+        type: String,
+    },
+    studentNumber: {
+        type: String,
+    },
+    school:{
+        type: String,
+    },
+    gmail:{
+        type: String,
+        required:true 
+    },
+    phoneNumber:{
+        type: String,
+        required:true
+    },
+    groupMade:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'group'
+        },
+    ],
+    groupJoin:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'group'
+        },
+    ],
+    tasks:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'project'
+        },
+    ]
 })
 
 module.exports = mongoose.model('account', AccountSchema) 

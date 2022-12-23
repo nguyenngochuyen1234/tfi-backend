@@ -20,27 +20,27 @@ router.get('/', verifyToken, async (req, res) => {
 // @route POST api/posts
 // @desc Create post
 // @access Private
-router.post('/', verifyToken, async (req, res) => {
-	const { name, major, studentNumber, school, gmail, phoneNumber, account } = req.body
+// router.post('/', verifyToken, async (req, res) => {
+// 	const { name, major, studentNumber, school, gmail, phoneNumber, account } = req.body
 
-	// Simple validation
-	if ( !name || !gmail || !phoneNumber)
-		return res
-			.status(400)
-			.json({ success: false, message: 'Vui lòng điền đủ thông tin bắt buộc' })
-	try {
-		const newUser = new User({
-			name, major, studentNumber, school, gmail, phoneNumber, account
-		})
-		console.log(newUser)
-		await newUser.save()
+// 	// Simple validation
+// 	if ( !name || !gmail || !phoneNumber)
+// 		return res
+// 			.status(400)
+// 			.json({ success: false, message: 'Vui lòng điền đủ thông tin bắt buộc' })
+// 	try {
+// 		const newUser = new User({
+// 			name, major, studentNumber, school, gmail, phoneNumber, account
+// 		})
+// 		console.log(newUser)
+// 		await newUser.save()
 
-		res.json({ success: true, message: 'Happy learning!',newUser })
-	} catch (error) {
-		console.log(error)
-		res.status(500).json({ success: false, message: 'Internal server error' })
-	}
-})
+// 		res.json({ success: true, message: 'Happy learning!',newUser })
+// 	} catch (error) {
+// 		console.log(error)
+// 		res.status(500).json({ success: false, message: 'Internal server error' })
+// 	}
+// })
 
 // @route PUT api/posts
 // @desc Update post
