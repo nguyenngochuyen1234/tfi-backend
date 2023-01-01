@@ -22,9 +22,6 @@ const AccountSchema = new Schema({
     major: {
         type: String,
     },
-    studentNumber: {
-        type: String,
-    },
     school:{
         type: String,
     },

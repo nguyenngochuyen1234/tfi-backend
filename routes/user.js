@@ -46,7 +46,7 @@ router.get('/', verifyToken, async (req, res) => {
 // @desc Update post
 // @access Private
 router.put('/:id', verifyToken, async (req, res) => {
-	const { name, major, studentNumber, school, gmail, phoneNumber, account } = req.body
+	const { name, major, school, gmail, phoneNumber, account } = req.body
 
 	// Simple validation
 	if ( !name || !gmail || !phoneNumber)
@@ -56,7 +56,7 @@ router.put('/:id', verifyToken, async (req, res) => {
 
 	try {
 		let updatedUser = {
-			name, major, studentNumber, school, gmail, phoneNumber, account
+			name, major, school, gmail, phoneNumber, account
 		}
 		console.log(updatedUser)
 		const postUpdateCondition = { _id: req.params.id, user: req.userId }

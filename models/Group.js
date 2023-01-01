@@ -6,6 +6,9 @@ const GroupSchema = new Schema({
         type: String,
         required: true,
     },
+    description: {
+        type: String,
+    },
     leader: {
         type: Schema.Types.ObjectId,
         ref: 'account'
@@ -13,7 +16,7 @@ const GroupSchema = new Schema({
     member:[
         {
             type: Schema.Types.ObjectId,
-            ref: 'user'
+            ref: 'account'
         }
     ],
     projects:[

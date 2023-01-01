@@ -24,17 +24,35 @@ router.get('/', verifyToken, async(req, res) => {
         res.status(500).json({success: false, message: "Internal server error"})
     }
 })
+// @route Get api/auth/all-account
+// @desc Check if user is logged in
+// @access Public
+
+router.get('/allAccount', verifyToken, async(req, res) => {
+    try{
+        const allUser = await Account.find()
+        res.json({success:true, allUser})
+    }catch(err){
+        console.log(err)
+        res.status(500).json({success: false, message: "Internal server error"})
+    }
+})
 
 // @route POST api/auth/register
 // @desc Register user
 // @access Public
 
 router.post('/register', async(req, res) => {
-    const {username, password} = req.body
-
+    const {username, password, rePassword} = req.body
+    
     // Simple validation
-    if(!username || !password)
+    if(!username || !password){
+        console.log({username, password})
         return res.status(400).json({success:false, message: 'Vui lòng nhập tên đăng nhập/mật khẩu'})
+    }
+    else if(password!==rePassword){
+        return res.status(400).json({success:false, message: 'Mật khẩu nhập lại không trùng khớp'})
+    }
     try{
         // Check for existing user
         const user = await Account.findOne({username})
