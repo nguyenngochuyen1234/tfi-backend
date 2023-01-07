@@ -112,7 +112,7 @@ router.post('/login', async(req,res)=>{
         return res.status(400).json({success: false, message: 'Tên đăng nhập/Mật khẩu không chính xác'})
         // Return token
         const accessToken = jwt.sign({userId: account._id}, process.env.ACCESS_TOKEN_SECRET)
-        res.json({success: true, message: "Đăng nhập không thành công", account, accessToken})
+        res.json({success: true, message: "Đăng nhập thành công", account, accessToken})
     }catch(err){
         console.log(err)
         res.status(500).json({success: false, message: "Internal server error"})

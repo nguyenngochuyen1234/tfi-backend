@@ -13,13 +13,13 @@ const GroupSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'account'
     },
-    member:[
+    member: [
         {
             type: Schema.Types.ObjectId,
             ref: 'account'
         }
     ],
-    projects:[
+    projects: [
         {
             type: Schema.Types.ObjectId,
             ref: 'project'
