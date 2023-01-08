@@ -20,31 +20,13 @@ router.get('/groupMade/:id', verifyToken, async (req, res) => {
 		res.status(500).json({ success: false, message: 'Internal server error' })
 	}
 })
-router.get('/groupmade', verifyToken, async (req, res) => {
+router.get('/allGroupUser', verifyToken, async (req, res) => {
 	try {
-		const groups = await Group.find({ leader: req.userId }).populate('leader', [
-			'username'
-		])
-		res.json({ success: true, groups })
-	} catch (error) {
-		console.log(error)
-		res.status(500).json({ success: false, message: 'Internal server error' })
-	}
-})
-router.get('/groupjoined', verifyToken, async (req, res) => {
-	try {
-		const page = parseInt(req.query.page) - 1 || 0;
-		const limit = parseInt(req.query.limit) || 6;
-
 		const user = await Account
-						.findById(req.userId)
-						.populate("groupJoin")
-						.skip(page * limit)
-						.limit(limit);
-
-		const allGroupJoin = user.groupJoin
-		const total = allGroupJoin.length || 0
-		res.json({ success: true, allGroupJoin, total })
+			.findById(req.userId)
+			.populate("groupJoin")
+			.populate("groupMade")
+		res.json({ success: true, groupMade:user.groupMade, groupJoined:user.groupJoin })
 	} catch (error) {
 		console.log(error)
 		res.status(500).json({ success: false, message: 'Internal server error' })
@@ -71,7 +53,7 @@ router.post('/', verifyToken, async (req, res) => {
 			.json({ success: false, message: 'Name already taken' })
 	try {
 		const newGroup = new Group({
-			name, description, leader: req.userId, member: [...member,req.userId]
+			name, description, leader: req.userId, member: [...member, req.userId]
 		})
 		//------------------------------------
 		const savedGroup = await newGroup.save()

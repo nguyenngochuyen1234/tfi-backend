@@ -25,7 +25,7 @@ const projectRouter = require('./routes/project')
 const taskRouter = require('./routes/task')
 const messageRouter = require('./routes/message')
 const imageRouter = require('./routes/image')
-
+const conversationRouter = require('./routes/conversation')
 //-------------SOCKET.IO------------
 // let onlineUsers = [];
 
@@ -81,6 +81,7 @@ app.use('/api/project', projectRouter)
 app.use('/api/task', taskRouter)
 app.use('/api/message', messageRouter)
 app.use('/api/image', imageRouter)
+app.use('/api/conversation', conversationRouter)
 
 app.listen(8000, () => {
     console.log('Server is runnning')

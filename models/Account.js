@@ -11,7 +11,7 @@ const AccountSchema = new Schema({
         type: String,
         required: true
     },
-    createAt:{
+    createAt: {
         type: Date,
         default: Date.now
     },
@@ -22,30 +22,30 @@ const AccountSchema = new Schema({
     major: {
         type: String,
     },
-    school:{
+    school: {
         type: String,
     },
-    gmail:{
+    gmail: {
         type: String,
-        required:true 
+        required: true
     },
-    phoneNumber:{
+    phoneNumber: {
         type: String,
-        required:true
+        required: true
     },
-    groupMade:[
+    groupMade: [
         {
             type: Schema.Types.ObjectId,
             ref: 'group'
         },
     ],
-    groupJoin:[
+    groupJoin: [
         {
             type: Schema.Types.ObjectId,
             ref: 'group'
         },
     ],
-    tasks:[
+    tasks: [
         {
             type: Schema.Types.ObjectId,
             ref: 'project'
