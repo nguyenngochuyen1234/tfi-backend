@@ -47,7 +47,6 @@ router.post('/register', async(req, res) => {
     
     // Simple validation
     if(!username || !password){
-        console.log({username, password})
         return res.status(400).json({success:false, message: 'Vui lòng nhập tên đăng nhập/mật khẩu'})
     }
     else if(password!==rePassword){

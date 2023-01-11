@@ -2,31 +2,54 @@ const express = require('express')
 const router = express.Router()
 const verifyToken = require('../middleware/auth')
 const Conversation = require("../models/Conversations");
+const account = require("../models/Account")
 
 //new conv
 
-router.post("/",verifyToken, async (req, res) => {
-    console.log(req.body);
+router.post("/", verifyToken, async (req, res) => {
   const newConversation = new Conversation({
-    members: [req.body.senderId, req.body.receiverId],
+    members: [req.userId, req.body.receiverId],
   });
 
   try {
-    const savedConversation = await newConversation.save();
-    res.status(200).json(savedConversation);
+    const conversation = await Conversation.findOne({
+      members: { $all: [req.body.senderId, req.body.receiverId] },
+    });
+    if (conversation) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'conversation already taken' })
+
+    }
+    else {
+      const savedConversation = await newConversation.save();
+      res.status(200).json(savedConversation);
+    }
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-//get conv of a user
+//get friend data of user
 
-router.get("/:userId",verifyToken, async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
-    const conversation = await Conversation.find({
-      members: { $in: [req.params.userId] },
-    });
-    res.status(200).json(conversation);
+    const conversations = await Conversation.find({
+      members: { $in: [req.userId] },
+    })
+    console.log(conversations)
+    const idFriends = conversations.map(conversation => {
+      const idFriend = conversation.members.find(member => {
+        return member !== req.userId
+      })
+      return idFriend
+    })
+    let friendData = []
+    for (let i = 0; i < idFriends.length; i++) {
+      let data = await account.findById(idFriends[i])
+      friendData.push(data)
+    }
+    res.status(200).json({ success: true, friendData });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -34,10 +57,10 @@ router.get("/:userId",verifyToken, async (req, res) => {
 
 // get conv includes two userId
 
-router.get("/find/:firstUserId",verifyToken, async (req, res) => {
+router.get("/find/:friendId", verifyToken, async (req, res) => {
   try {
     const conversation = await Conversation.findOne({
-      members: { $all: [req.params.firstUserId, req.userId] },
+      members: { $all: [req.params.friendId, req.userId] },
     });
     res.status(200).json(conversation)
   } catch (err) {

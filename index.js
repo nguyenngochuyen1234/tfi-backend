@@ -7,16 +7,16 @@ const morgan = require('morgan')
 const cors = require('cors')
 
 const { createServer } = require("http");
-// const { Server } = require("socket.io");
+const { Server } = require("socket.io");
 
 
 
-// const httpServer = createServer(app);
-// const io = new Server(httpServer, {
-//     cors: {
-//         origin: "http://localhost:3000",
-//     }
-// });
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+    cors: {
+        origin: "http://localhost:3000",
+    }
+});
 require('dotenv').config()
 
 const authRouter = require('./routes/auth')
@@ -27,28 +27,24 @@ const messageRouter = require('./routes/message')
 const imageRouter = require('./routes/image')
 const conversationRouter = require('./routes/conversation')
 //-------------SOCKET.IO------------
-// let onlineUsers = [];
-
-// io.on('connection', socket => {
-//     socket.on('new-user-add', (newUserId) => {
-//         if (!onlineUsers.some((user) => user.userId === newUserId)) {
-//             onlineUsers.push({
-//                 userid: newUserId,
-//                 socketId: socket.id
-//             })
-//         }
-//         console.log("Connected Users", onlineUsers)
-//         io.emit('get-users', onlineUsers)
-//     })
-//     socket.on("disconnect", () => {
-//         onlineUsers = onlineUsers.filter((user) => user.socketId != socket.id)
-//         console.log("User Disconnected", onlineUsers)
-//         io.emit('get-users', onlineUsers)
-//     })
-// });
+global.onlineUsers = new Map()
+io.on('connection', (socket) => {
+    console.log(onlineUsers);
+    global.chatSocket = socket;
+    socket.on("add-user",(userId)=>{
+        onlineUsers.set(userId, socket.id)
+    });
+    socket.on("send-msg",(data)=>{
+        const sendUserSocket = onlineUsers.get(data.receiverId);
+        console.log(data)
+        if(sendUserSocket){
+            socket.to(sendUserSocket).emit("msg-recieve", data)
+        }
+    })
+});
 
 
-
+    
 
 
 
@@ -83,6 +79,6 @@ app.use('/api/message', messageRouter)
 app.use('/api/image', imageRouter)
 app.use('/api/conversation', conversationRouter)
 
-app.listen(8000, () => {
+httpServer.listen(8000, () => {
     console.log('Server is runnning')
 })
