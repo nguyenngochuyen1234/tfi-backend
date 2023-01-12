@@ -79,6 +79,6 @@ app.use('/api/message', messageRouter)
 app.use('/api/image', imageRouter)
 app.use('/api/conversation', conversationRouter)
 
-httpServer.listen(process.env.PORT||8000, () => {
+httpServer.listen(8000, () => {
     console.log('Server is runnning')
 })
