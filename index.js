@@ -31,20 +31,20 @@ global.onlineUsers = new Map()
 io.on('connection', (socket) => {
     console.log(onlineUsers);
     global.chatSocket = socket;
-    socket.on("add-user",(userId)=>{
+    socket.on("add-user", (userId) => {
         onlineUsers.set(userId, socket.id)
     });
-    socket.on("send-msg",(data)=>{
+    socket.on("send-msg", (data) => {
         const sendUserSocket = onlineUsers.get(data.receiverId);
         console.log(data)
-        if(sendUserSocket){
+        if (sendUserSocket) {
             socket.to(sendUserSocket).emit("msg-recieve", data)
         }
     })
 });
 
 
-    
+
 
 
 
