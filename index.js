@@ -14,7 +14,7 @@ const { Server } = require("socket.io");
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: "https://manager-job.vercel.app/",
+        origin: "http://localhost:3000",
     }
 });
 require('dotenv').config()
