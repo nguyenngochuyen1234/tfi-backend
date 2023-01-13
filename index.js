@@ -14,7 +14,7 @@ const { Server } = require("socket.io");
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: "https://manager-job.vercel.app/",
+        origin: "https://localhost:3000/",
     }
 });
 require('dotenv').config()
@@ -79,6 +79,6 @@ app.use('/api/message', messageRouter)
 app.use('/api/image', imageRouter)
 app.use('/api/conversation', conversationRouter)
 
-httpServer.listen(process.env.PORT||8000, () => {
+httpServer.listen(8000, () => {
     console.log('Server is runnning')
 })
