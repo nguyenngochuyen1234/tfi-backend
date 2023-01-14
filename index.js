@@ -14,7 +14,7 @@ const { Server } = require("socket.io");
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.URL_FRONTEND,
+        origin: "http://localhost:3000",
     }
 });
 require('dotenv').config()
@@ -29,6 +29,7 @@ const conversationRouter = require('./routes/conversation')
 //-------------SOCKET.IO------------
 global.onlineUsers = new Map()
 io.on('connection', (socket) => {
+    console.log("socket run");
     console.log(onlineUsers);
     global.chatSocket = socket;
     socket.on("add-user", (userId) => {
