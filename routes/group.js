@@ -26,7 +26,7 @@ router.get('/allGroupUser', verifyToken, async (req, res) => {
 			.findById(req.userId)
 			.populate("groupJoin")
 			.populate("groupMade")
-		res.json({ success: true, groupMade:user.groupMade, groupJoined:user.groupJoin })
+		res.json({ success: true, groupMade: user.groupMade, groupJoined: user.groupJoin })
 	} catch (error) {
 		console.log(error)
 		res.status(500).json({ success: false, message: 'Internal server error' })
@@ -97,6 +97,47 @@ router.put('/:id', verifyToken, async (req, res) => {
 			postUpdateCondition,
 			updatedGroup,
 			{ new: true }
+		)
+
+		// User not authorised to update post or post not found
+		if (!updatedGroup)
+			return res.status(401).json({
+				success: false,
+				message: 'Post not found or user not authorised'
+			})
+
+		res.json({
+			success: true,
+			message: 'Update successful!',
+			post: updatedGroup
+		})
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ success: false, message: 'Internal server error' })
+	}
+})
+// // @route PATCH api/posts
+// // @desc Update post
+// // @access Private
+router.patch('/:idGroup', verifyToken, async (req, res) => {
+	const name = req.body.name
+
+	// check existing name group
+	if (name) {
+		const group = await Group.findOne({ name })
+		if (group && group.name === name)
+			return res
+				.status(400)
+				.json({ success: false, message: 'Name already taken' })
+	}
+
+	try {
+
+
+		updatedGroup = await Group.findByIdAndUpdate(
+			{
+				_id: req.params.idGroup,
+			}, { ...req.body }
 		)
 
 		// User not authorised to update post or post not found
