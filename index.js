@@ -14,7 +14,7 @@ const { Server } = require("socket.io");
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: "https://manager-web.onrender.com",
+        origin: "https://tfi-nguyenngochuyen1234.vercel.app",
     }
 });
 require('dotenv').config()
