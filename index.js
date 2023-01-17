@@ -14,26 +14,27 @@ const { Server } = require("socket.io");
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.URL_FRONTEND,
+        origin: "http://localhost:3000",
     }
 });
 require('dotenv').config()
 
 const authRouter = require('./routes/auth')
 const groupRouter = require('./routes/group')
-const projectRouter = require('./routes/project')
 const taskRouter = require('./routes/task')
 const messageRouter = require('./routes/message')
 const imageRouter = require('./routes/image')
 const conversationRouter = require('./routes/conversation')
+const notificationRouter = require('./routes/notification')
 //-------------SOCKET.IO------------
 global.onlineUsers = new Map()
 io.on('connection', (socket) => {
-    console.log(onlineUsers);
+    console.log("socket run");
     global.chatSocket = socket;
     socket.on("add-user", (userId) => {
         onlineUsers.set(userId, socket.id)
     });
+    console.log(onlineUsers);
     socket.on("send-msg", (data) => {
         const sendUserSocket = onlineUsers.get(data.receiverId);
         console.log(data)
@@ -73,11 +74,11 @@ app.get("/", (req, res) => {
 
 app.use('/api/auth', authRouter)
 app.use('/api/group', groupRouter)
-app.use('/api/project', projectRouter)
 app.use('/api/task', taskRouter)
 app.use('/api/message', messageRouter)
 app.use('/api/image', imageRouter)
 app.use('/api/conversation', conversationRouter)
+app.use('/api/notification', notificationRouter)
 
 httpServer.listen(8000, () => {
     console.log('Server is runnning')

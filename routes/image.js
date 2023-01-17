@@ -40,7 +40,6 @@ router.post("/", upload.single("testImage"), (req, res) => {
 
 router.post("/singleImage", async (req, res) => {
     const name = req.body.name
-    console.log(req.body)
     try {
         const data = await imageModel.findOne({ name: name })
         res.json({ success: true, data })
@@ -50,7 +49,6 @@ router.post("/singleImage", async (req, res) => {
 })
 router.post("/groupImage", async (req, res) => {
     const ids = req.body.arrayId
-    console.log(ids)
     try {
         let groupName = []
         for (let i = 0; i < ids.length; i++) {
@@ -58,7 +56,6 @@ router.post("/groupImage", async (req, res) => {
             let userData = await User.findById(id)
             let name = userData.username
             let data = await imageModel.findOne({ name: name })
-            console.log(data)
             groupName.push(data)
         }
         res.json({ success: true, groupName })

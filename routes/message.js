@@ -26,7 +26,6 @@ router.post("/",verifyToken, async (req, res) => {
 
 router.get("/find/:friendId",verifyToken, async (req, res) => {
 	try {
-		console.log([req.params.friendId, req.userId])
 		const conversation = await Conversation.findOne({
 			members: { $all: [req.params.friendId, req.userId] },
 		});

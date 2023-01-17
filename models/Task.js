@@ -29,10 +29,10 @@ const TaskSchema = new Schema({
         enum:["Hoàn thành", "Chưa hoàn thành","Đang hoàn thành"],
         default: "Chưa hoàn thành"
     },
-    project:{
+    group:{
         type: Schema.Types.ObjectId,
-        ref: 'project'
+        ref: 'group'
     }
-})
+},{ timestamps: true })
 
 module.exports = mongoose.model('task', TaskSchema)

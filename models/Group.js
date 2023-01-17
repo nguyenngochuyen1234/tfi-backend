@@ -19,10 +19,10 @@ const GroupSchema = new Schema({
             ref: 'account'
         }
     ],
-    projects: [
+    tasks: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'project'
+            ref: 'task'
         }
     ]
 })
