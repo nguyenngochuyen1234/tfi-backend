@@ -80,13 +80,13 @@ router.put('/:idTask', verifyToken, async (req, res) => {
 
 router.delete('/:idTask', verifyToken, async (req, res) => {
 	try {
-		 await Group.updateMany(
-        { tasks: req.params.idTask },
-        { $pull: { tasks: req.params.idTask } }
-      );
+		await Group.updateMany(
+			{ tasks: req.params.idTask },
+			{ $pull: { tasks: req.params.idTask } }
+		);
 		const deletedTask = await Task.findByIdAndDelete(req.params.idTask);
 
-		
+
 		res.json({ success: true, task: deletedTask })
 	} catch (error) {
 		console.log(error)
