@@ -8,8 +8,8 @@ const Notification = require("../models/Notification")
 
 router.post("/", verifyToken, async (req, res) => {
 
-    const { receiver, type, title } = req.body
-    const newNotification = new Notification({ receiver, type, title });
+    const { receiver, type, title, link } = req.body
+    const newNotification = new Notification({ receiver, type, title, link });
 
     try {
         const savedNotification = await newNotification.save();

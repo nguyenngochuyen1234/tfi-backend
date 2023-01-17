@@ -3,20 +3,23 @@ const mongoose = require("mongoose");
 const NotificationSchema = new mongoose.Schema(
   {
     receiver: {
+      type: Array,
+      required: true,
+    },
+    type: {
+      type: String,
+      enum: ["group", "message"],
+      default: "group",
+      required: true,
+    },
+    title: {
       type: String,
       required: true,
     },
-    type:{
-        type: String,
-        enum:["group", "message"],
-        default: "group",
-        required: true,
+    link: {
+      type: String,
     },
-    title: {
-        type: String,
-        required: true,
-    },
-    deadline:{
+    deadline: {
       type: Date,
     }
   },
