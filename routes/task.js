@@ -3,15 +3,26 @@ const router = express.Router()
 const verifyToken = require('../middleware/auth')
 
 const Task = require('../models/Task')
-const Project = require('../models/Project')
-
+const Group = require('../models/Group')
 
 // @route GET api/task
 // @desc Get task
 // @access Private
-router.get('/:id', verifyToken, async (req, res) => {
+router.get('/:idGroup', verifyToken, async (req, res) => {
 	try {
-		const task = await Task.findById(req.params.id)
+		const tasks = await Task.find({ group: req.params.idGroup })
+		res.json({ success: true, tasks })
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ success: false, message: 'Internal server error' })
+	}
+})
+// @route GET api/task
+// @desc Get only task
+// @access Private
+router.get('/find/:idTask', verifyToken, async (req, res) => {
+	try {
+		const task = await Task.findById(req.params.idTask)
 		res.json({ success: true, task })
 	} catch (error) {
 		console.log(error)
@@ -22,95 +33,66 @@ router.get('/:id', verifyToken, async (req, res) => {
 // @route POST api/task
 // @desc Create task
 // @access Private
-router.post('/', verifyToken, async (req, res) => {
-	const { nameTask, descriptionTask, comment, links, dealine, member, project } = req.body
+router.post('/:idGroup', verifyToken, async (req, res) => {
+	const idGroup = req.params.idGroup
+	const { nameTask, descriptionTask, comment, links, dealine, member } = req.body
 	try {
 		const newTask = new Task({
-			nameTask, descriptionTask, comment, links, dealine, member, project
+			nameTask, descriptionTask, comment, links, dealine, member, group: idGroup
 		})
 
 		const savedTask = await newTask.save()
 
-		if (req.body.project) {
-			const projectFind = Project.findById(project)
-			await projectFind.updateOne({ $push: { tasks: [savedTask._id] } });
+		if (idGroup) {
+			const groupFind = Group.findById(idGroup)
+			await groupFind.updateOne({ $push: { tasks: [savedTask._id] } });
 		}
-		res.json({ success: true, message: 'Happy learning!', task: newTask})
+		res.json({ success: true, task: newTask })
 	} catch (error) {
 		console.log(error)
 		res.status(500).json({ success: false, message: 'Internal server error' })
 	}
 })
 
-// // // @route PUT api/task
-// // // @desc Update post
-// // // @access Private
-// router.put('/:id', verifyToken, async (req, res) => {
-// 	const { name } = req.body
+// @route POST api/task
+// @desc update task
 
-// 	// Simple validation
-// 	if (!name)
-// 		return res
-// 			.status(400)
-// 			.json({ success: false, message: 'Name is required' })
-//      // check existing name group
-//      const group = await Group.findOne({name})
-//      if(group && group.name === name)
-//          return res
-//              .status(400)
-//              .json({ success: false, message: 'Name already taken' })
+router.put('/:idTask', verifyToken, async (req, res) => {
+	try {
+		const task = await Task.findById(req.params.idTask);
+		await task.updateOne({ $set: req.body });
+		if (!task)
+			return res.status(401).json({
+				success: false,
+				message: 'Task not found'
+			})
 
-// 	try {
-// 		let updatedGroup = {
-// 			name
-// 		}
+		res.json({
+			success: true,
+			message: 'Update successful!',
+			task
+		})
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ success: false, message: 'Internal server error' })
+	}
+})
 
-// 		const postUpdateCondition = { _id: req.params.id, user: req.userId }
+router.delete('/:idTask', verifyToken, async (req, res) => {
+	try {
+		 await Group.updateMany(
+        { tasks: req.params.idTask },
+        { $pull: { tasks: req.params.idTask } }
+      );
+		const deletedTask = await Task.findByIdAndDelete(req.params.idTask);
 
-// 		updatedGroup = await Group.findOneAndUpdate(
-// 			postUpdateCondition,
-// 			updatedGroup,
-// 			{ new: true }
-// 		)
+		
+		res.json({ success: true, task: deletedTask })
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ success: false, message: 'Internal server error' })
+	}
+})
 
-// 		// User not authorised to update post or post not found
-// 		if (!updatedGroup)
-// 			return res.status(401).json({
-// 				success: false,
-// 				message: 'Post not found or user not authorised'
-// 			})
-
-// 		res.json({
-// 			success: true,
-// 			message: 'Update successful!',
-// 			post: updatedGroup
-// 		})
-// 	} catch (error) {
-// 		console.log(error)
-// 		res.status(500).json({ success: false, message: 'Internal server error' })
-// 	}
-// })
-
-// // @route DELETE api/group
-// // @desc Delete group
-// // @access Private
-// router.delete('/:id', verifyToken, async (req, res) => {
-// 	try {
-// 		const groupDeleteCondition = { _id: req.params.id, user: req.userId }
-// 		const deletedgroup = await Group.findOneAndDelete(groupDeleteCondition)
-
-// 		// User not authorised or group not found
-// 		if (!deletedgroup)
-// 			return res.status(401).json({
-// 				success: false,
-// 				message: 'group not found or user not authorised'
-// 			})
-
-// 		res.json({ success: true, group: deletedgroup })
-// 	} catch (error) {
-// 		console.log(error)
-// 		res.status(500).json({ success: false, message: 'Internal server error' })
-// 	}
-// })
 
 module.exports = router

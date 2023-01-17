@@ -24,6 +24,19 @@ router.get('/', verifyToken, async(req, res) => {
         res.status(500).json({success: false, message: "Internal server error"})
     }
 })
+// @route Get api/auth
+// @desc Check if user is logged in, get one user
+// @access Public
+
+router.get('/find/:id', async(req, res) => {
+    try{
+        const user = await Account.findById(req.params.id).select('-password')
+        res.json({success:true, user})
+    }catch(err){
+        console.log(err)
+        res.status(500).json({success: false, message: "Internal server error"})
+    }
+})
 // @route Get api/auth/all-account
 // @desc Check if user is logged in
 // @access Public

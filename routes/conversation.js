@@ -37,7 +37,6 @@ router.get("/", verifyToken, async (req, res) => {
     const conversations = await Conversation.find({
       members: { $in: [req.userId] },
     })
-    console.log(conversations)
     const idFriends = conversations.map(conversation => {
       const idFriend = conversation.members.find(member => {
         return member !== req.userId

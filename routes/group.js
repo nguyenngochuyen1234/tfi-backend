@@ -3,17 +3,27 @@ const router = express.Router()
 const verifyToken = require('../middleware/auth')
 
 const Group = require('../models/Group')
-// const User = require('../models/User')
 const Account = require('../models/Account')
 
 // @route GET api/group
 // @desc Get group
 // @access Private
-router.get('/groupMade/:id', verifyToken, async (req, res) => {
+// router.get('/groupMade/:id', verifyToken, async (req, res) => {
+// 	try {
+// 		const group = await Group.findById(req.params.id).populate("member")
+// 		console.log(group)
+// 		res.json({ success: true, group })
+// 	} catch (error) {
+// 		console.log(error)
+// 		res.status(500).json({ success: false, message: 'Internal server error' })
+// 	}
+// })
+// @route GET api/group
+// @desc Get only group
+// @access Private
+router.get('/find/:idGroup', verifyToken, async (req, res) => {
 	try {
-		console.log(req.params.id)
-		const group = await Group.findById(req.params.id).populate("member")
-		console.log(group)
+		const group = await Group.findOne({ _id: req.params.idGroup })
 		res.json({ success: true, group })
 	} catch (error) {
 		console.log(error)
@@ -72,7 +82,8 @@ router.post('/', verifyToken, async (req, res) => {
 // // @desc Update post
 // // @access Private
 router.put('/:id', verifyToken, async (req, res) => {
-	const { name } = req.body
+	console.log(req.body)
+	const name = req.body.name
 
 	// Simple validation
 	if (!name)
@@ -87,57 +98,14 @@ router.put('/:id', verifyToken, async (req, res) => {
 			.json({ success: false, message: 'Name already taken' })
 
 	try {
-		let updatedGroup = {
-			name
-		}
+		let updatedGroup = req.body
 
 		const postUpdateCondition = { _id: req.params.id, user: req.userId }
 
 		updatedGroup = await Group.findOneAndUpdate(
-			postUpdateCondition,
+			{ _id: req.params.id},
 			updatedGroup,
 			{ new: true }
-		)
-
-		// User not authorised to update post or post not found
-		if (!updatedGroup)
-			return res.status(401).json({
-				success: false,
-				message: 'Post not found or user not authorised'
-			})
-
-		res.json({
-			success: true,
-			message: 'Update successful!',
-			post: updatedGroup
-		})
-	} catch (error) {
-		console.log(error)
-		res.status(500).json({ success: false, message: 'Internal server error' })
-	}
-})
-// // @route PATCH api/posts
-// // @desc Update post
-// // @access Private
-router.patch('/:idGroup', verifyToken, async (req, res) => {
-	const name = req.body.name
-
-	// check existing name group
-	if (name) {
-		const group = await Group.findOne({ name })
-		if (group && group.name === name)
-			return res
-				.status(400)
-				.json({ success: false, message: 'Name already taken' })
-	}
-
-	try {
-
-
-		updatedGroup = await Group.findByIdAndUpdate(
-			{
-				_id: req.params.idGroup,
-			}, { ...req.body }
 		)
 
 		// User not authorised to update post or post not found
