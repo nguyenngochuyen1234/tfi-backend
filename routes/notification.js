@@ -7,13 +7,15 @@ const Notification = require("../models/Notification")
 
 
 router.post("/", verifyToken, async (req, res) => {
-
     const { receiver, type, title, link } = req.body
-    const newNotification = new Notification({ receiver, type, title, link });
-
+    
     try {
-        const savedNotification = await newNotification.save();
-        res.status(200).json(savedNotification);
+        const notificationMessage = await Notification.find({receiver,title,type:"message", seen:false})
+        if(notificationMessage.length==0){
+            const newNotification = new Notification({ receiver, type, title, link });
+            await newNotification.save();
+        }
+        res.status(200).json({success: true});
     } catch (err) {
         res.status(500).json({ success: false, message: 'Internal server error' })
 
@@ -29,6 +31,33 @@ router.get("/find/:notificationId", verifyToken, async (req, res) => {
     } catch (err) {
         res.status(500).json({ success: false, message: 'Internal server error' })
 
+    }
+
+});
+
+
+router.get("/", verifyToken, async (req, res) => {
+    const idUser = req.userId
+    try {
+        const notifications = await Notification.find({receiver:{$in:[ idUser ]}})
+        res.status(200).json({ success: true, notifications });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Internal server error' })
+    }
+
+});
+router.patch("/:idNotifiction", verifyToken, async (req, res) => {
+    const newData = req.body
+    try {
+        const updatedNotifiction = await Notification.findOneAndUpdate(
+			{ _id: req.params.idNotifiction },
+			{ $set: newData },
+			{ new: true }
+		)
+
+        res.status(200).json({ success: true, updatedNotifiction });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Internal server error' })
     }
 
 });

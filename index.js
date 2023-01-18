@@ -37,10 +37,19 @@ io.on('connection', (socket) => {
     console.log(onlineUsers);
     socket.on("send-msg", (data) => {
         const sendUserSocket = onlineUsers.get(data.receiverId);
-        console.log(data)
         if (sendUserSocket) {
             socket.to(sendUserSocket).emit("msg-recieve", data)
         }
+    })
+    socket.on("send-notification", (data) => {
+        
+            let sendUserSocket = onlineUsers.get(data.receiver);
+            if (sendUserSocket) {
+                socket.to(sendUserSocket).emit("notification-recieve", data)
+            }
+        // if (sendUserSocket) {
+        //     socket.to(sendUserSocket).emit("msg-recieve", data)
+        // }
     })
 });
 

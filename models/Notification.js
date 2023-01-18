@@ -21,6 +21,10 @@ const NotificationSchema = new mongoose.Schema(
     },
     deadline: {
       type: Date,
+    },
+    seen:{
+      type:Boolean,
+      default: false,
     }
   },
   { timestamps: true }

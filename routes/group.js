@@ -85,18 +85,6 @@ router.patch('/:id', verifyToken, async (req, res) => {
 
 	const member = req.body.member
 
-	// Simple validation
-	// if (!name)
-	// 	return res
-	// 		.status(400)
-	// 		.json({ success: false, message: 'Name is required' })
-	// check existing name group
-	// const group = await Group.findOne({ name })
-	// if (group && group.name === name)
-	// 	return res
-	// 		.status(400)
-	// 		.json({ success: false, message: 'Name already taken' })
-
 	try {
 		let dataGroup = req.body
 		if (member.length > 0) {
