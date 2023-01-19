@@ -1,5 +1,6 @@
 const express = require('express')
 const Account = require('../models/Account')
+const Image = require('../models/Image')
 const router = express.Router()
 
 const argon2 = require('argon2')
@@ -92,7 +93,13 @@ router.post('/register/add', async(req, res) => {
 			.json({ success: false, message: 'Vui lòng điền đủ thông tin bắt buộc' })
 	try {
         const hashedPassword = await argon2.hash(password)
-        const newAccount = new Account({username, password: hashedPassword, name, major, studentNumber, school, gmail, phoneNumber})
+
+        const image = await Image.findOne({name:username})
+        const base64String = btoa(
+            String.fromCharCode(...new Uint8Array(image.img.data))
+        )
+
+        const newAccount = new Account({username, password: hashedPassword, name, major, studentNumber,avatar:`data:image/png;base64,${base64String}`, school, gmail, phoneNumber})
         await newAccount.save()
 
         // Return token

@@ -29,6 +29,9 @@ const AccountSchema = new Schema({
         type: String,
         required: true
     },
+    avatar:{
+        type:String,
+    },
     phoneNumber: {
         type: String,
         required: true
@@ -50,7 +53,7 @@ const AccountSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'project'
         },
-    ]
+    ],
 })
 
 module.exports = mongoose.model('account', AccountSchema) 
