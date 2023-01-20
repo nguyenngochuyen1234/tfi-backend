@@ -22,10 +22,16 @@ const NotificationSchema = new mongoose.Schema(
     deadline: {
       type: Date,
     },
-    seen:{
-      type:Boolean,
+    seen: {
+      type: Boolean,
       default: false,
-    }
+    },
+    time: {
+      type: Date,
+      required: true,
+      default: Date.now
+    },
+
   },
   { timestamps: true }
 );

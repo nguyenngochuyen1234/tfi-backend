@@ -39,7 +39,7 @@ router.get("/find/:notificationId", verifyToken, async (req, res) => {
 router.get("/", verifyToken, async (req, res) => {
     const idUser = req.userId
     try {
-        const notifications = await Notification.find({receiver:{$in:[ idUser ]}})
+        const notifications = await Notification.find({receiver:{$in:[ idUser ]}}).sort({time:-1})
         res.status(200).json({ success: true, notifications });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Internal server error' })

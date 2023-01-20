@@ -26,6 +26,7 @@ const messageRouter = require('./routes/message')
 const imageRouter = require('./routes/image')
 const conversationRouter = require('./routes/conversation')
 const notificationRouter = require('./routes/notification')
+const groupRecentlyRouter = require('./routes/groupRecently')
 //-------------SOCKET.IO------------
 global.onlineUsers = new Map()
 io.on('connection', (socket) => {
@@ -88,6 +89,7 @@ app.use('/api/message', messageRouter)
 app.use('/api/image', imageRouter)
 app.use('/api/conversation', conversationRouter)
 app.use('/api/notification', notificationRouter)
+app.use('/api/groupRecently', groupRecentlyRouter)
 
 httpServer.listen(8000, () => {
     console.log('Server is runnning')
