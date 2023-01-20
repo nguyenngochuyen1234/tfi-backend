@@ -2,11 +2,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const TaskSchema = new Schema({
-    nameTask: {
+    name: {
         type: String,
         required: true,
     },
-    descriptionTask: {
+    description: {
         type: String,
     },
     comment: {
@@ -21,7 +21,7 @@ const TaskSchema = new Schema({
         default: Date.now
     },
     member: {
-        type: String,
+        type: Array,
         require: true,
     },
     status:{
