@@ -76,6 +76,10 @@ router.post('/', verifyToken, async (req, res) => {
 		}
 		for (let i = 0; i < member.length; i++) {
 			let user = await Account.findById(member[i])
+			let newGroupRecently = new GroupRecently({
+				user:req.userId, group:savedGroup._id
+			})
+			await newGroupRecently.save()
 			await user.updateOne({ $push: { groupJoin: [savedGroup._id] } });
 		}
 		res.json({ success: true, message: 'create done', group: newGroup })
@@ -98,6 +102,10 @@ router.patch('/:id', verifyToken, async (req, res) => {
 			for (let i = 0; i < member.length; i++) {
 				if (member[i] !== req.userId) {
 					let user = await Account.findById(member[i])
+					let newGroupRecently = new GroupRecently({
+						user:member[i], group:req.params.id
+					})
+					await newGroupRecently.save()
 					await user.updateOne({ $push: { groupJoin: [req.params.id] } });
 				}
 			}
@@ -141,6 +149,8 @@ router.delete('/:id', verifyToken, async (req, res) => {
 		},
 			{ $pull: { groupMade: idGroup, groupJoin: idGroup } },
 		);
+
+		await GroupRecently.deleteMany({group: idGroup})
 
 		const deletedgroup = await Group.findOneAndDelete(groupDeleteCondition)
 

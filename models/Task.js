@@ -15,7 +15,7 @@ const TaskSchema = new Schema({
     links: {
         type: String,
     },
-    dealine: {
+    deadline: {
         type: Date,
         required: true,
         default: Date.now

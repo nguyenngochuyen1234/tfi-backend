@@ -35,11 +35,11 @@ router.get('/find/:idTask', verifyToken, async (req, res) => {
 // @access Private
 router.post('/:idGroup', verifyToken, async (req, res) => {
 	const idGroup = req.params.idGroup
-	const { name, description, comment, links, dealine, member } = req.body
+	const { name, description, comment, links, deadline, member } = req.body
 	console.log(req.body)
 	try {
 		const newTask = new Task({
-			name, description, comment, links, dealine, member, group: idGroup
+			name, description, comment, links, deadline, member, group: idGroup
 		})
 
 		const savedTask = await newTask.save()
