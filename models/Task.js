@@ -26,8 +26,8 @@ const TaskSchema = new Schema({
     },
     status:{
         type: String,
-        enum:["Hoàn thành", "Chưa hoàn thành","Đang hoàn thành"],
-        default: "Chưa hoàn thành"
+        enum:["uncomplete","completed","past due"],
+        default: "uncomplete"
     },
     group:{
         type: Schema.Types.ObjectId,

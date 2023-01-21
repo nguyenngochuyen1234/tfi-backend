@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const verifyToken = require('../middleware/auth')
 
+const Group = require('../models/Group')
 const GroupRecently = require('../models/GroupRecently')
 
 router.patch('/:idGroup', verifyToken, async (req, res) => {
@@ -19,7 +20,7 @@ router.patch('/:idGroup', verifyToken, async (req, res) => {
 })
 router.get('/', verifyToken, async (req, res) => {
     try {
-        const groups = await GroupRecently.find({user:req.userId}).sort({time:-1}).limit(6)
+        const groups = await GroupRecently.find({user:req.userId}).sort({time:-1}).limit(6).populate("group")
         res.json({ success: true, groups })
     } catch (error) {
         console.log(error)

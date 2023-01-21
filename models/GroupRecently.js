@@ -2,13 +2,13 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const GroupRecentlySchema = new Schema({
-    user:{
-        type:String,
-        required:true,
+    user: {
+        type: String,
+        required: true,
     },
     group: {
-        type:String,
-        required:true,
+        type: Schema.Types.ObjectId,
+        ref: 'group',
     },
     time: {
         type: Date,
