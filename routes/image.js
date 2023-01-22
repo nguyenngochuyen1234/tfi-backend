@@ -20,6 +20,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post("/", upload.single("testImage"), (req, res) => {
+    console.log(req.file)
     const saveImage = imageModel({
         name: req.body.name,
         img: {

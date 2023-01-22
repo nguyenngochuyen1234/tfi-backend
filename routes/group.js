@@ -133,6 +133,25 @@ router.patch('/:id', verifyToken, async (req, res) => {
 		res.status(500).json({ success: false, message: 'Internal server error' })
 	}
 })
+// @route Get api/auth
+// @desc get many user by id group
+// @access Public
+
+router.get('/findUsers/:idGroup', async(req, res) => {
+    try{
+        const group = await Group.findById(req.params.idGroup)
+		if(group){
+			const memberIds = group.member
+			const users = await Account.find({_id:{$in:memberIds}})
+			res.json({success:true, users})
+		}else{
+			res.json({success:false})
+		}
+    }catch(err){
+        console.log(err)
+        res.status(500).json({success: false, message: "Internal server error"})
+    }
+})
 
 // @route DELETE api/group
 // @desc Delete group
