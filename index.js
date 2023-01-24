@@ -1,11 +1,13 @@
 const express = require('express')
+const firebase = require('./firebase')
+const multer = require('multer')
+
 const app = express()
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const dotenv = require('dotenv')
 const morgan = require('morgan')
 const cors = require('cors')
-
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 
@@ -43,11 +45,11 @@ io.on('connection', (socket) => {
         }
     })
     socket.on("send-notification", (data) => {
-        
-            let sendUserSocket = onlineUsers.get(data.receiver);
-            if (sendUserSocket) {
-                socket.to(sendUserSocket).emit("notification-recieve", data)
-            }
+
+        let sendUserSocket = onlineUsers.get(data.receiver);
+        if (sendUserSocket) {
+            socket.to(sendUserSocket).emit("notification-recieve", data)
+        }
         // if (sendUserSocket) {
         //     socket.to(sendUserSocket).emit("msg-recieve", data)
         // }
@@ -77,10 +79,44 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }))
 app.use(cors())
 app.use(morgan("common"))
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json({ extended: false }))
 
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json({ extended: false }))
+
+const upload = multer({
+    storage: multer.memoryStorage()
+})
+
+app.post('/api/upload', upload.single('file'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).send("Error: No files found")
+    }
+    const nameFile = Date.now() + "." + req.file.originalname
+    const blob = firebase.bucket.file(nameFile)
+
+    const blobWriter = blob.createWriteStream({
+        metadata: {
+            contentType: req.file.mimetype
+        }
+    })
+
+    blobWriter.on('error', (err) => {
+        console.log(err)
+    })
+
+    blobWriter.on('finish', async () => {
+        await blob.makePublic()     
+        res.status(200).send({ link: `https://firebasestorage.googleapis.com/v0/b/storageapp-13725.appspot.com/o/${nameFile}?alt=media` })
+    })
+
+    blobWriter.end(req.file.buffer)
+})
 app.get("/", (req, res) => {
     res.status(200).json("Hello")
 })
+
 
 app.use('/api/auth', authRouter)
 app.use('/api/group', groupRouter)

@@ -48,7 +48,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzljM
 POST http://localhost:8000/api/user
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzlkNDllODE3YzU3YTBkYzQwZTFhOTQiLCJpYXQiOjE2NzEyNTI1MTR9._4Q1OXybP2ZG54o-ugAcG9o-QOoa6cKgiR39_jlJqwk
-
 {
   "name": "Nguyễn Ngọc Huyền",
   "major": "TE34",
@@ -61,3 +60,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzlkN
 
 GET http://localhost:8000/api/user
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzlkNDllODE3YzU3YTBkYzQwZTFhOTQiLCJpYXQiOjE2NzEyNTI1MTR9._4Q1OXybP2ZG54o-ugAcG9o-QOoa6cKgiR39_jlJqwk
+
+###
+POST http://localhost:8000/api/upload
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzlkNDllODE3YzU3YTBkYzQwZTFhOTQiLCJpYXQiOjE2NzEyNTI1MTR9._4Q1OXybP2ZG54o-ugAcG9o-QOoa6cKgiR39_jlJqwk
+{
+  
+}
