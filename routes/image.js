@@ -4,6 +4,8 @@ const express = require('express')
 const router = express.Router()
 const imageModel = require('../models/Image')
 const User = require('../models/Account')
+const Group = require('../models/Group')
+const Account = require('../models/Account')
 
 //----------------MULTER--------------
 
@@ -51,15 +53,13 @@ router.post("/singleImage", async (req, res) => {
 router.post("/groupImage", async (req, res) => {
     const ids = req.body.arrayId
     try {
-        let groupName = []
-        for (let i = 0; i < ids.length; i++) {
-            let id = ids[i]
-            let userData = await User.findById(id)
-            let name = userData.username
-            let data = await imageModel.findOne({ name: name })
-            groupName.push(data)
+        let groupImg = []
+        for(let i = 0;i<ids.length;i++){
+            let user = await Account.findOne({_id:ids[i]})
+            groupImg.push(user.avatar)
         }
-        res.json({ success: true, groupName })
+        console.log({groupImg})
+        res.json({ success: true, groupImg })
     } catch (err) {
         res.status(500).json({ success: false, message: 'Internal server error' })
     }

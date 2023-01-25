@@ -29,6 +29,8 @@ const imageRouter = require('./routes/image')
 const conversationRouter = require('./routes/conversation')
 const notificationRouter = require('./routes/notification')
 const groupRecentlyRouter = require('./routes/groupRecently')
+const postRouter = require('./routes/post')
+const commentRouter = require('./routes/comment')
 //-------------SOCKET.IO------------
 global.onlineUsers = new Map()
 io.on('connection', (socket) => {
@@ -126,6 +128,8 @@ app.use('/api/image', imageRouter)
 app.use('/api/conversation', conversationRouter)
 app.use('/api/notification', notificationRouter)
 app.use('/api/groupRecently', groupRecentlyRouter)
+app.use('/api/post', postRouter)
+app.use('/api/comment', commentRouter)
 
 httpServer.listen(8000, () => {
     console.log('Server is runnning')

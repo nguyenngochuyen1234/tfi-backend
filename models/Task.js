@@ -20,19 +20,24 @@ const TaskSchema = new Schema({
         required: true,
         default: Date.now
     },
+    dayStart: {
+        type: Date,
+        default: Date.now
+
+    },
     member: {
         type: Array,
         require: true,
     },
-    status:{
+    status: {
         type: String,
-        enum:["uncomplete","completed","past due"],
+        enum: ["uncomplete", "completed", "past due"],
         default: "uncomplete"
     },
-    group:{
+    group: {
         type: Schema.Types.ObjectId,
         ref: 'group'
     }
-},{ timestamps: true })
+}, { timestamps: true })
 
 module.exports = mongoose.model('task', TaskSchema)

@@ -13,41 +13,41 @@ require('dotenv').config()
 // @desc Check if user is logged in
 // @access Public
 
-router.get('/', verifyToken, async(req, res) => {
-    try{
+router.get('/', verifyToken, async (req, res) => {
+    try {
         const user = await Account.findById(req.userId).select('-password')
-        if(!user) 
-            return res.status(400).json({success: false, message:'Vui lòng nhập tên đăng nhập'})
-        res.json({success:true, user})
-    }catch(err){
+        if (!user)
+            return res.status(400).json({ success: false, message: 'Vui lòng nhập tên đăng nhập' })
+        res.json({ success: true, user })
+    } catch (err) {
         console.log(err)
-        res.status(500).json({success: false, message: "Internal server error"})
+        res.status(500).json({ success: false, message: "Internal server error" })
     }
 })
 // @route Get api/auth
 // @desc Check if user is logged in, get one user
 // @access Public
 
-router.get('/find/:id', async(req, res) => {
-    try{
+router.get('/find/:id', async (req, res) => {
+    try {
         const user = await Account.findById(req.params.id).select('-password')
-        res.json({success:true, user})
-    }catch(err){
+        res.json({ success: true, user })
+    } catch (err) {
         console.log(err)
-        res.status(500).json({success: false, message: "Internal server error"})
+        res.status(500).json({ success: false, message: "Internal server error" })
     }
 })
 // @route Get api/auth/all-account
 // @desc Check if user is logged in
 // @access Public
 
-router.get('/allAccount', verifyToken, async(req, res) => {
-    try{
+router.get('/allAccount', verifyToken, async (req, res) => {
+    try {
         const allUser = await Account.find()
-        res.json({success:true, allUser})
-    }catch(err){
+        res.json({ success: true, allUser })
+    } catch (err) {
         console.log(err)
-        res.status(500).json({success: false, message: "Internal server error"})
+        res.status(500).json({ success: false, message: "Internal server error" })
     }
 })
 
@@ -55,85 +55,80 @@ router.get('/allAccount', verifyToken, async(req, res) => {
 // @desc Register user
 // @access Public
 
-router.post('/register', async(req, res) => {
-    const {username, password, rePassword} = req.body
-    
+router.post('/register', async (req, res) => {
+    const { username, password, rePassword } = req.body
+
     // Simple validation
-    if(!username || !password){
-        return res.status(400).json({success:false, message: 'Vui lòng nhập tên đăng nhập/mật khẩu'})
+    if (!username || !password) {
+        return res.status(400).json({ success: false, message: 'Vui lòng nhập tên đăng nhập/mật khẩu' })
     }
-    else if(password!==rePassword){
-        return res.status(400).json({success:false, message: 'Mật khẩu nhập lại không trùng khớp'})
+    else if (password !== rePassword) {
+        return res.status(400).json({ success: false, message: 'Mật khẩu nhập lại không trùng khớp' })
     }
-    try{
+    try {
         // Check for existing user
-        const user = await Account.findOne({username})
-        if(user)
-        return res
-            .status(400).json({success: false, message: 'Tên đăng nhập đã tồn tại'})
+        const user = await Account.findOne({ username })
+        if (user)
+            return res
+                .status(400).json({ success: false, message: 'Tên đăng nhập đã tồn tại' })
         //All good
-        res.json({success: true})
-        
-    }catch(err){
+        res.json({ success: true })
+
+    } catch (err) {
         console.log(err)
-        res.status(500).json({success: false, message: "Internal server error"})
+        res.status(500).json({ success: false, message: "Internal server error" })
     }
 })
 // @route POST api/auth/register/update
 // @desc Register user, add user information
 // @access Public
-router.post('/register/add', async(req, res) => {
-    const {username, password, name, major, studentNumber, school, gmail, phoneNumber} = req.body
+router.post('/register/add', async (req, res) => {
+    const { username, password, name, major, studentNumber, school, gmail, phoneNumber, avatarImg } = req.body
 
     // Simple validation
-	if ( !name || !major || !studentNumber || !school || !gmail || !phoneNumber)
-		return res
-			.status(400)
-			.json({ success: false, message: 'Vui lòng điền đủ thông tin bắt buộc' })
-	try {
+    if (!name || !major || !studentNumber || !school || !gmail || !phoneNumber)
+        return res
+            .status(400)
+            .json({ success: false, message: 'Vui lòng điền đủ thông tin bắt buộc' })
+    try {
         const hashedPassword = await argon2.hash(password)
-
-        const image = await Image.findOne({name:username})
-        const base64String = btoa(
-            String.fromCharCode(...new Uint8Array(image.img.data))
-        )
-
-        const newAccount = new Account({username, password: hashedPassword, name, major, studentNumber,avatar:`data:image/png;base64,${base64String}`, school, gmail, phoneNumber})
+        
+        const newAccount = new Account({ username, password: hashedPassword, name, major, studentNumber, avatar: avatarImg, school, gmail, phoneNumber })
         await newAccount.save()
 
         // Return token
-        const accessToken = jwt.sign({userId: newAccount._id}, process.env.ACCESS_TOKEN_SECRET)
-        res.json({success: true, message: "Đăng ký thành công", accessToken})
-    }catch(err){
+        const accessToken = jwt.sign({ userId: newAccount._id }, process.env.ACCESS_TOKEN_SECRET)
+        res.json({ success: true, message: "Đăng ký thành công", accessToken })
+    } catch (err) {
         console.log(err)
-        res.status(500).json({success: false, message: "Internal server error"})
+        res.status(500).json({ success: false, message: "Internal server error" })
     }
 })
 // @route POST api/auth/login
 // @desc Login user
 // @access Public
-router.post('/login', async(req,res)=>{
-    const {username, password} = req.body
+router.post('/login', async (req, res) => {
+    const { username, password } = req.body
     //simple validations
-    if(!username|| !password)
-    return res  
+    if (!username || !password)
+        return res
             .status(400)
-            .json({success: false, message: "Vui lòng nhập tên đăng nhập/mật khẩu"})
+            .json({ success: false, message: "Vui lòng nhập tên đăng nhập/mật khẩu" })
     try {
-        const account = await Account.findOne({username})
-        if(!account)
-        return res.status(400).json({success: false, message: 'Tên đăng nhập/Mật khẩu không chính xác'})
+        const account = await Account.findOne({ username })
+        if (!account)
+            return res.status(400).json({ success: false, message: 'Tên đăng nhập/Mật khẩu không chính xác' })
 
         //Username found
         const passwordValid = await argon2.verify(account.password, password)
-        if(!passwordValid)
-        return res.status(400).json({success: false, message: 'Tên đăng nhập/Mật khẩu không chính xác'})
+        if (!passwordValid)
+            return res.status(400).json({ success: false, message: 'Tên đăng nhập/Mật khẩu không chính xác' })
         // Return token
-        const accessToken = jwt.sign({userId: account._id}, process.env.ACCESS_TOKEN_SECRET)
-        res.json({success: true, message: "Đăng nhập thành công", account, accessToken})
-    }catch(err){
+        const accessToken = jwt.sign({ userId: account._id }, process.env.ACCESS_TOKEN_SECRET)
+        res.json({ success: true, message: "Đăng nhập thành công", account, accessToken })
+    } catch (err) {
         console.log(err)
-        res.status(500).json({success: false, message: "Internal server error"})
+        res.status(500).json({ success: false, message: "Internal server error" })
     }
 })
 module.exports = router

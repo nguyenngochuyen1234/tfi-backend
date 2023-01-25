@@ -29,6 +29,27 @@ router.get('/find/:idTask', verifyToken, async (req, res) => {
 		res.status(500).json({ success: false, message: 'Internal server error' })
 	}
 })
+// @route GET api/task
+// @desc Get task
+// @access Private
+router.post('/timeline/:idGroup', verifyToken, async (req, res) => {
+	const { firstDayString, lastDayString } = req.body
+
+	try {
+		const tasks = await Task.find({
+			group: req.params.idGroup,
+			$and: [
+				{ dayStart: { $lt: (lastDayString) } },
+				{ deadline: { $gt: (firstDayString) } }
+			]
+		})
+		console.log(tasks)
+		res.json({ success: true, tasks })
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ success: false, message: 'Internal server error' })
+	}
+})
 
 // @route POST api/task
 // @desc Create task
