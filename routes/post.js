@@ -6,7 +6,7 @@ const Task = require('../models/Task')
 const Group = require('../models/Group')
 const Post = require('../models/Post')
 const Account = require('../models/Account')
-
+const React = require('../models/React')
 // @route GET api/post
 // @desc Get all post/group
 // @access Private
@@ -14,7 +14,7 @@ router.get('/:idGroup', verifyToken, async (req, res) => {
 	try {
 		const posts = await Post.aggregate([
 			{
-				$match:{group:req.params.idGroup}
+				$match: { group: req.params.idGroup }
 			},
 			{
 				$lookup: {
@@ -24,8 +24,14 @@ router.get('/:idGroup', verifyToken, async (req, res) => {
 					as: "userData"
 				},
 			}
-		])
-		res.json({ success: true, posts })
+		], function (err, results) {
+			if (err) throw err;
+			Post.populate(results, { "path": "comments reacts" }, function (err, results) {
+				if (err) throw err;
+				console.log(results)
+				res.json({ success: true, posts: results })
+			});
+		})
 	} catch (error) {
 		console.log(error)
 		res.status(500).json({ success: false, message: 'Internal server error' })
@@ -52,7 +58,7 @@ router.post('/:idGroup', verifyToken, async (req, res) => {
 	console.log(req.body)
 	try {
 		const newPost = new Post({
-			about, group: idGroup, user:req.userId
+			about, group: idGroup, user: req.userId
 		})
 
 		const savedPost = await newPost.save()

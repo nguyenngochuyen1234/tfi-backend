@@ -3,7 +3,12 @@ const Schema = mongoose.Schema
 
 const ReactSchema = new Schema({
     username: {
-        type:String,
+        type: String,
+    },
+    idUser: {
+        type: Schema.Types.ObjectId,
+        ref: 'account',
+
     },
     post: {
         type: Schema.Types.ObjectId,

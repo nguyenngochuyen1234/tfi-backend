@@ -2,37 +2,44 @@ const express = require('express')
 const router = express.Router()
 const verifyToken = require('../middleware/auth')
 
-const Message = require('../models/Message')
-const Conversation = require('../models/Conversations')
-
+const React = require('../models/React')
+const Account = require('../models/Account')
+const Post = require('../models/Post')
 // create new message
 
 
-router.post("/",verifyToken, async (req, res) => {
-
-	const {conversationId, text} = req.body
-	const newMessage = new Message({conversationId, text, sender:req.userId});
+router.post("/:idPost", verifyToken, async (req, res) => {
 
 	try {
-		const savedMessage = await newMessage.save();
-		res.status(200).json(savedMessage);
+
+		const user = await Account.findOne({ _id: req.userId })
+		const newReact = new React({
+			username: user.name,
+			idUser: req.userId,
+			post: req.params.idPost
+		});
+		const savedReact = await newReact.save();
+
+		const post = await Post.findById(req.params.idPost)
+		await post.updateOne({ $push: { reacts: [savedReact._id] } });
+
+		res.status(200).json({ success: true, savedReact });
 	} catch (err) {
 		res.status(500).json({ success: false, message: 'Internal server error' })
 
 	}
 });
 
-//get
 
-router.get("/find/:friendId",verifyToken, async (req, res) => {
+router.delete("/:idPost", verifyToken, async (req, res) => {
 	try {
-		const conversation = await Conversation.findOne({
-			members: { $all: [req.params.friendId, req.userId] },
-		});
-		const messages = await Message.find({
-			conversationId: conversation._id,
-		});
-		res.status(200).json({ success: true, messages, conversationId: conversation._id });
+		const react = await React.findOneAndDelete({ post: req.params.idPost, idUser: req.userId })
+		await Post.updateMany(
+			{ _id: req.params.idPost },
+			{ $pull: { reacts: react._id } }
+		);
+
+		res.status(200).json({ success: true });
 	} catch (err) {
 		res.status(500).json({ success: false, message: 'Internal server error' })
 

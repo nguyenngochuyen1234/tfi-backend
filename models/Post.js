@@ -19,6 +19,12 @@ const PostSchema = new Schema({
         type: String,
         required: true,
     },
+    reacts:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'react'
+        }
+    ],
     comments: [
         {
             type: Schema.Types.ObjectId,
