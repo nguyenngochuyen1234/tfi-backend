@@ -32,6 +32,7 @@ const groupRecentlyRouter = require('./routes/groupRecently')
 const postRouter = require('./routes/post')
 const commentRouter = require('./routes/comment')
 const reactRouter = require('./routes/react')
+const exerciseRouter = require('./routes/exercise')
 //-------------SOCKET.IO------------
 global.onlineUsers = new Map()
 io.on('connection', (socket) => {
@@ -132,6 +133,7 @@ app.use('/api/groupRecently', groupRecentlyRouter)
 app.use('/api/post', postRouter)
 app.use('/api/comment', commentRouter)
 app.use('/api/react', reactRouter)
+app.use('/api/exercise', exerciseRouter)
 
 httpServer.listen(8000, () => {
     console.log('Server is runnning')
