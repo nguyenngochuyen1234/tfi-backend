@@ -10,7 +10,19 @@ const Group = require('../models/Group')
 // @access Private
 router.get('/:idGroup', verifyToken, async (req, res) => {
 	try {
-		const tasks = await Task.find({ group: req.params.idGroup })
+		const tasks = await Task.find({ group: req.params.idGroup }).populate("exercise")
+		res.json({ success: true, tasks })
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ success: false, message: 'Internal server error' })
+	}
+})
+// @route GET api/task
+// @desc Get task
+// @access Private
+router.get(' /findAllTask/allTaskOfUser', verifyToken, async (req, res) => {
+	try {
+		const tasks = await Task.find({ member: {$in:[req.userId]}}).populate("group exercise")
 		res.json({ success: true, tasks })
 	} catch (error) {
 		console.log(error)
@@ -22,7 +34,7 @@ router.get('/:idGroup', verifyToken, async (req, res) => {
 // @access Private
 router.get('/find/:idTask', verifyToken, async (req, res) => {
 	try {
-		const task = await Task.findById(req.params.idTask)
+		const task = await Task.findById(req.params.idTask).populate("exercise")
 		res.json({ success: true, task })
 	} catch (error) {
 		console.log(error)

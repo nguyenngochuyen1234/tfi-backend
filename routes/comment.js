@@ -22,7 +22,6 @@ router.post('/:idPost', verifyToken, async (req, res) => {
         const savedComment = await newComment.save()
         
         const post = await Post.findById(req.params.idPost)
-        console.log(post)
         await post.updateOne({ $push: { comments: [savedComment._id] } });
 
         res.json({ success: true, comment: savedComment })

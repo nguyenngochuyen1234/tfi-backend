@@ -37,6 +37,10 @@ const TaskSchema = new Schema({
     group: {
         type: Schema.Types.ObjectId,
         ref: 'group'
+    },
+    exercise:{
+        type: Schema.Types.ObjectId,
+        ref: 'exercise',
     }
 }, { timestamps: true })
 

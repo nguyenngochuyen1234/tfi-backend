@@ -4,6 +4,7 @@ const verifyToken = require('../middleware/auth')
 
 const Exercise = require('../models/Exercise')
 const Account = require('../models/Account')
+const Task = require('../models/Task')
 // create new message
 
 
@@ -22,6 +23,8 @@ router.post("/:idTask", verifyToken, async (req, res) => {
 			title
 		});
 		const savedExercise = await newExercise.save();
+		const task = await Task.findById(req.params.idTask)
+		await task.updateOne({ exercise: savedExercise._id });
 
 		res.status(200).json({ success: true, savedExercise });
 	} catch (err) {
