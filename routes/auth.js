@@ -92,7 +92,7 @@ router.post('/register/add', async (req, res) => {
             .json({ success: false, message: 'Vui lòng điền đủ thông tin bắt buộc' })
     try {
         const hashedPassword = await argon2.hash(password)
-        
+
         const newAccount = new Account({ username, password: hashedPassword, name, major, studentNumber, avatar: avatarImg, school, gmail, phoneNumber })
         await newAccount.save()
 
@@ -129,6 +129,35 @@ router.post('/login', async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({ success: false, message: "Internal server error" })
+    }
+})
+
+// // @route PATCH api/auth
+// // @desc Update auth
+router.patch('/update', verifyToken, async (req, res) => {
+    try {
+        let dataAuth = req.body
+
+        const updateAuth = await Account.findOneAndUpdate(
+            { _id: req.userId },
+            { $set: dataAuth },
+            { new: true }
+        )
+        // User not authorised to update post or post not found
+        if (!updateAuth)
+            return res.status(401).json({
+                success: false,
+                message: 'Auth not found or user not authorised'
+            })
+
+        res.json({
+            success: true,
+            message: 'Update successful!',
+            auth: updateAuth
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 module.exports = router
