@@ -12,6 +12,10 @@ const ExerciseSchema = new Schema({
     avatar:{
         type:String,
     },
+    title:{
+        type:String,
+        required:false,
+    },
     time:{
         type: Date,
         default: Date.now,
