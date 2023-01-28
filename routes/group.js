@@ -5,19 +5,30 @@ const Group = require('../models/Group')
 const Account = require('../models/Account')
 const GroupRecently = require('../models/GroupRecently')
 
-// @route GET api/group
-// @desc Get group
+// @route GET api/group/join
+// @desc Get join group with Code
 // @access Private
-// router.get('/groupMade/:id', verifyToken, async (req, res) => {
-// 	try {
-// 		const group = await Group.findById(req.params.id).populate("member")
-// 		console.log(group)
-// 		res.json({ success: true, group })
-// 	} catch (error) {
-// 		console.log(error)
-// 		res.status(500).json({ success: false, message: 'Internal server error' })
-// 	}
-// })
+router.post('/join/:id', verifyToken, async (req, res) => {
+	try {
+		const idGroup = req.params.id
+		const group = await Group.findById(idGroup)
+		if (group) {
+			if (group.member?.includes(req.userId)) {
+				res.json({ success: false, message: "Bạn đã có trong group" })
+			} else {
+				await group.updateOne({ $push: { member: [req.userId] } })
+				let user = await Account.findById(req.userId)
+				await user.updateOne({ $push: { groupJoin: [req.params.id] } })
+				res.json({ success: true, message: "join done !" })
+			}
+		} else {
+			res.json({ success: false, message: "Code error" })
+		}
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ success: false, message: 'Internal server error' })
+	}
+})
 // @route GET api/group
 // @desc Get only group
 // @access Private
@@ -64,9 +75,9 @@ router.post('/', verifyToken, async (req, res) => {
 		})
 		//------------------------------------
 		const savedGroup = await newGroup.save()
-		if(savedGroup){
+		if (savedGroup) {
 			const newGroupRecently = new GroupRecently({
-				user:req.userId, group:savedGroup._id
+				user: req.userId, group: savedGroup._id
 			})
 			await newGroupRecently.save()
 		}
@@ -77,7 +88,7 @@ router.post('/', verifyToken, async (req, res) => {
 		for (let i = 0; i < member.length; i++) {
 			let user = await Account.findById(member[i])
 			let newGroupRecently = new GroupRecently({
-				user:req.userId, group:savedGroup._id
+				user: req.userId, group: savedGroup._id
 			})
 			await newGroupRecently.save()
 			await user.updateOne({ $push: { groupJoin: [savedGroup._id] } });
@@ -103,7 +114,7 @@ router.patch('/:id', verifyToken, async (req, res) => {
 				if (member[i] !== req.userId) {
 					let user = await Account.findById(member[i])
 					let newGroupRecently = new GroupRecently({
-						user:member[i], group:req.params.id
+						user: member[i], group: req.params.id
 					})
 					await newGroupRecently.save()
 					await user.updateOne({ $push: { groupJoin: [req.params.id] } });
@@ -137,20 +148,20 @@ router.patch('/:id', verifyToken, async (req, res) => {
 // @desc get many user by id group
 // @access Public
 
-router.get('/findUsers/:idGroup', async(req, res) => {
-    try{
-        const group = await Group.findById(req.params.idGroup)
-		if(group){
+router.get('/findUsers/:idGroup', async (req, res) => {
+	try {
+		const group = await Group.findById(req.params.idGroup)
+		if (group) {
 			const memberIds = group.member
-			const users = await Account.find({_id:{$in:memberIds}})
-			res.json({success:true, users})
-		}else{
-			res.json({success:false})
+			const users = await Account.find({ _id: { $in: memberIds } })
+			res.json({ success: true, users })
+		} else {
+			res.json({ success: false })
 		}
-    }catch(err){
-        console.log(err)
-        res.status(500).json({success: false, message: "Internal server error"})
-    }
+	} catch (err) {
+		console.log(err)
+		res.status(500).json({ success: false, message: "Internal server error" })
+	}
 })
 
 // @route DELETE api/group
@@ -169,7 +180,7 @@ router.delete('/:id', verifyToken, async (req, res) => {
 			{ $pull: { groupMade: idGroup, groupJoin: idGroup } },
 		);
 
-		await GroupRecently.deleteMany({group: idGroup})
+		await GroupRecently.deleteMany({ group: idGroup })
 
 		const deletedgroup = await Group.findOneAndDelete(groupDeleteCondition)
 
