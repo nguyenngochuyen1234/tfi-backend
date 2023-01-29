@@ -12,11 +12,12 @@ router.post('/join/:id', verifyToken, async (req, res) => {
 	try {
 		const idGroup = req.params.id
 		const group = await Group.findById(idGroup)
+		console.log(group)
 		if (group) {
 			if (group.member?.includes(req.userId)) {
 				res.json({ success: false, message: "Bạn đã có trong group" })
 			} else {
-				console.log({members:group.member,user:req.userId})
+				console.log({ members: group.member, user: req.userId })
 				await group.updateOne({ $push: { member: [req.userId] } })
 				let user = await Account.findById(req.userId)
 				await user.updateOne({ $push: { groupJoin: [idGroup] } })
@@ -94,7 +95,7 @@ router.post('/', verifyToken, async (req, res) => {
 		for (let i = 0; i < member.length; i++) {
 			let user = await Account.findById(member[i])
 			let newGroupRecently = new GroupRecently({
-				user: req.userId, group: savedGroup._id
+				user: member[i], group: savedGroup._id
 			})
 			await newGroupRecently.save()
 			await user.updateOne({ $push: { groupJoin: [savedGroup._id] } });
