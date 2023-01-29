@@ -16,10 +16,16 @@ router.post('/join/:id', verifyToken, async (req, res) => {
 			if (group.member?.includes(req.userId)) {
 				res.json({ success: false, message: "Bạn đã có trong group" })
 			} else {
+				console.log({members:group.member,user:req.userId})
 				await group.updateOne({ $push: { member: [req.userId] } })
 				let user = await Account.findById(req.userId)
-				await user.updateOne({ $push: { groupJoin: [req.params.id] } })
+				await user.updateOne({ $push: { groupJoin: [idGroup] } })
 				res.json({ success: true, message: "join done !" })
+				let newGroupRecently = new GroupRecently({
+					user: req.userId, group: idGroup
+				})
+				await newGroupRecently.save()
+
 			}
 		} else {
 			res.json({ success: false, message: "Code error" })

@@ -8,7 +8,7 @@ const NotificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["group", "message"],
+      enum: ["group", "message", "task", "post", "comment"],
       default: "group",
       required: true,
     },
@@ -18,6 +18,10 @@ const NotificationSchema = new mongoose.Schema(
     },
     link: {
       type: String,
+    },
+    description: {
+      type: String,
+      required: false,
     },
     deadline: {
       type: Date,
