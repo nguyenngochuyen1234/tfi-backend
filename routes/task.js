@@ -22,6 +22,7 @@ router.get('/:idGroup', verifyToken, async (req, res) => {
 // @access Private
 router.get('/findAllTask/allTaskOfUser', verifyToken, async (req, res) => {
 	try {
+		console.log("run")
 		const tasks = await Task.find({ member: {$in:[req.userId]}}).populate("group exercise")
 		res.json({ success: true, tasks })
 	} catch (error) {
