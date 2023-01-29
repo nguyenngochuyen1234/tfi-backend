@@ -111,12 +111,25 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     })
 
     blobWriter.on('finish', async () => {
-        await blob.makePublic()     
+        await blob.makePublic()
         res.status(200).send({ link: `https://firebasestorage.googleapis.com/v0/b/storageapp-13725.appspot.com/o/${nameFile}?alt=media` })
     })
 
     blobWriter.end(req.file.buffer)
 })
+app.delete('/api/delete', (req, res) => {
+    (async () => {
+        try {
+            await firebase.bucket().file(req.body).delete();
+        res.status(200).send({message:"Xóa thành công", success:true})
+        } catch (error) {
+        res.status(400).send({message:"Xóa không thành công",success:false})
+            
+        }
+        
+    })()
+})
+
 app.get("/", (req, res) => {
     res.status(200).json("Hello")
 })
