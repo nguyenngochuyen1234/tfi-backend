@@ -31,7 +31,7 @@ const TaskSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["uncomplete", "completed", "past due"],
+        enum: ["uncomplete", "completed", "past-due"],
         default: "uncomplete"
     },
     group: {
