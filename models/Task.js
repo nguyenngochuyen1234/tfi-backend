@@ -11,6 +11,7 @@ const TaskSchema = new Schema({
     },
     comment: {
         type: String,
+        default:"",
     },
     links: {
         type: String,

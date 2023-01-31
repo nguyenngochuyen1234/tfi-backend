@@ -41,18 +41,18 @@ io.on('connection', (socket) => {
     socket.on("add-user", (userId) => {
         onlineUsers.set(userId, socket.id)
     });
-    console.log(onlineUsers);
     socket.on("send-msg", (data) => {
         const sendUserSocket = onlineUsers.get(data.receiverId);
         if (sendUserSocket) {
             socket.to(sendUserSocket).emit("msg-recieve", data)
         }
     })
+    console.log(onlineUsers);
     socket.on("send-notification", (data) => {
-
         let sendUserSocket = onlineUsers.get(data.receiver);
+        console.log({data})
         if (sendUserSocket) {
-            socket.to(sendUserSocket).emit("notification-recieve", data)
+            socket.to(sendUserSocket).emit("notification-recieve", {...data})
         }
         // if (sendUserSocket) {
         //     socket.to(sendUserSocket).emit("msg-recieve", data)

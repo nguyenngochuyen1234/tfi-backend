@@ -23,7 +23,7 @@ router.get('/:idGroup', verifyToken, async (req, res) => {
 router.get('/findAllTask/allTaskOfUser', verifyToken, async (req, res) => {
 	try {
 		console.log("run")
-		const tasks = await Task.find({ member: {$in:[req.userId]}}).populate("group exercise")
+		const tasks = await Task.find({ member: { $in: [req.userId] } }).populate("group exercise")
 		res.json({ success: true, tasks })
 	} catch (error) {
 		console.log(error)
@@ -70,7 +70,6 @@ router.post('/timeline/:idGroup', verifyToken, async (req, res) => {
 router.post('/:idGroup', verifyToken, async (req, res) => {
 	const idGroup = req.params.idGroup
 	const { name, description, comment, links, deadline, member } = req.body
-	console.log(req.body)
 	try {
 		const newTask = new Task({
 			name, description, comment, links, deadline, member, group: idGroup
@@ -89,7 +88,7 @@ router.post('/:idGroup', verifyToken, async (req, res) => {
 	}
 })
 
-// @route POST api/task
+// @route Put api/task
 // @desc update task
 
 router.put('/:idTask', verifyToken, async (req, res) => {
@@ -112,7 +111,31 @@ router.put('/:idTask', verifyToken, async (req, res) => {
 		res.status(500).json({ success: false, message: 'Internal server error' })
 	}
 })
+router.patch('/:id', verifyToken, async (req, res) => {
+	const dataTask = req.body
+	console.log(dataTask)
+	try {
+		const updateTask = await Task.findOneAndUpdate(
+			{ _id: req.params.id },
+			{ $set: dataTask },
+			{ new: true }
+		)
+		// User not authorised to update post or post not found
+		if (!updateTask)
+			return res.status(401).json({
+				success: false,
+				message: 'Post not found or user not authorised'
+			})
 
+		res.json({
+			success: true,
+			post: updateTask
+		})
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ success: false, message: 'Internal server error' })
+	}
+})
 router.delete('/:idTask', verifyToken, async (req, res) => {
 	try {
 		await Group.updateMany(
