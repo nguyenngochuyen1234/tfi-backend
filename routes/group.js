@@ -21,11 +21,11 @@ router.post('/join/:id', verifyToken, async (req, res) => {
 				await group.updateOne({ $push: { member: [req.userId] } })
 				let user = await Account.findById(req.userId)
 				await user.updateOne({ $push: { groupJoin: [idGroup] } })
-				res.json({ success: true, message: "join done !" })
 				let newGroupRecently = new GroupRecently({
 					user: req.userId, group: idGroup
 				})
 				await newGroupRecently.save()
+				res.json({ success: true, message: "join done !" })
 
 			}
 		} else {

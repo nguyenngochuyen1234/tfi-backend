@@ -58,7 +58,6 @@ router.post("/groupImage", async (req, res) => {
             let user = await Account.findOne({_id:ids[i]})
             groupImg.push(user.avatar)
         }
-        console.log({groupImg})
         res.json({ success: true, groupImg })
     } catch (err) {
         res.status(500).json({ success: false, message: 'Internal server error' })
