@@ -33,7 +33,22 @@ router.post("/:idTask", verifyToken, async (req, res) => {
 	}
 });
 
+// @route DELETE api/exercise
+// @desc Delete exercise
+// @access Private
+router.delete('/:idExercise', verifyToken, async (req, res) => {
+	try {
+		const idExercise = req.params.idExercise
+		const exerciseDeleteCondition = { _id: idExercise, user: req.userId }
+		await Task.updateMany({ exercise: idExercise }, { exercise: null });
+		const exerciseDelete = await Exercise.findOneAndDelete(exerciseDeleteCondition)
 
+		res.json({ success: true, exerciseDelete })
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ success: false, message: 'Internal server error' })
+	}
+})
 
 
 module.exports = router

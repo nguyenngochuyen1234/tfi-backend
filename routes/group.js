@@ -4,6 +4,7 @@ const verifyToken = require('../middleware/auth')
 const Group = require('../models/Group')
 const Account = require('../models/Account')
 const GroupRecently = require('../models/GroupRecently')
+const Task = require('../models/Task')
 
 // @route GET api/group/join
 // @desc Get join group with Code
@@ -188,6 +189,7 @@ router.delete('/:id', verifyToken, async (req, res) => {
 		);
 
 		await GroupRecently.deleteMany({ group: idGroup })
+		await Task.deleteMany({ group: idGroup })
 
 		const deletedgroup = await Group.findOneAndDelete(groupDeleteCondition)
 
