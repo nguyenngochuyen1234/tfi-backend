@@ -4,8 +4,8 @@ const verifyToken = require('../middleware/auth')
 
 const Task = require('../models/Task')
 const Group = require('../models/Group')
+const Comment = require('../models/Comment')
 const Post = require('../models/Post')
-const Account = require('../models/Account')
 const React = require('../models/React')
 // @route GET api/post
 // @desc Get all post/group
@@ -94,21 +94,20 @@ router.post('/:idGroup', verifyToken, async (req, res) => {
 // 	}
 // })
 
-// router.delete('/:idTask', verifyToken, async (req, res) => {
-// 	try {
-// 		await Group.updateMany(
-// 			{ tasks: req.params.idTask },
-// 			{ $pull: { tasks: req.params.idTask } }
-// 		);
-// 		const deletedTask = await Task.findByIdAndDelete(req.params.idTask);
+router.delete('/:idPost', verifyToken, async (req, res) => {
+	try {
+		const idPost = req.params.idPost
+		await Comment.deleteMany({post:idPost})
+		await React.deleteMany({post:idPost})
+		const deletedPost = await Post.findByIdAndDelete(idPost);
 
 
-// 		res.json({ success: true, task: deletedTask })
-// 	} catch (error) {
-// 		console.log(error)
-// 		res.status(500).json({ success: false, message: 'Internal server error' })
-// 	}
-// })
+		res.json({ success: true, task: deletedPost })
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ success: false, message: 'Internal server error' })
+	}
+})
 
 
 module.exports = router
