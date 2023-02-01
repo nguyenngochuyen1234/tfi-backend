@@ -56,6 +56,7 @@ io.on('connection', (socket) => {
             if (sendUserSocket) {
                 socket.to(sendUserSocket).emit("notification-recieve", {...data})
             }
+
         }
     })
 });
@@ -117,17 +118,19 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 
     blobWriter.end(req.file.buffer)
 })
-app.delete('/api/delete', (req, res) => {
-    (async () => {
+app.post('/api/delete',async (req, res) => {
+    
         try {
-            await firebase.bucket().file(req.body).delete();
-        res.status(200).send({message:"Xóa thành công", success:true})
+        console.log(req.body.link)
+           const response= await firebase.bucket.deleteFile(req.body.link);
+           console.log(response)
+            res.status(200).send({ message: "Xóa thành công", success: true })
         } catch (error) {
-        res.status(400).send({message:"Xóa không thành công",success:false})
-            
+            res.status(400).send({ message: "Xóa không thành công", success: false })
+
         }
-        
-    })()
+
+   
 })
 
 app.get("/", (req, res) => {
