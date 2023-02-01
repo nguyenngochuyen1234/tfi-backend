@@ -33,6 +33,7 @@ const postRouter = require('./routes/post')
 const commentRouter = require('./routes/comment')
 const reactRouter = require('./routes/react')
 const exerciseRouter = require('./routes/exercise')
+const timelineDashboardRouter = require('./routes/timelineDashboard')
 //-------------SOCKET.IO------------
 global.onlineUsers = new Map()
 io.on('connection', (socket) => {
@@ -49,14 +50,13 @@ io.on('connection', (socket) => {
     })
     console.log(onlineUsers);
     socket.on("send-notification", (data) => {
-        let sendUserSocket = onlineUsers.get(data.receiver);
-        console.log({data})
-        if (sendUserSocket) {
-            socket.to(sendUserSocket).emit("notification-recieve", {...data})
+        if(data){
+            let sendUserSocket = onlineUsers.get(data.receiver);
+            console.log({data})
+            if (sendUserSocket) {
+                socket.to(sendUserSocket).emit("notification-recieve", {...data})
+            }
         }
-        // if (sendUserSocket) {
-        //     socket.to(sendUserSocket).emit("msg-recieve", data)
-        // }
     })
 });
 
@@ -147,6 +147,7 @@ app.use('/api/post', postRouter)
 app.use('/api/comment', commentRouter)
 app.use('/api/react', reactRouter)
 app.use('/api/exercise', exerciseRouter)
+app.use('/api/timelineDashboard', timelineDashboardRouter)
 
 httpServer.listen(8000, () => {
     console.log('Server is runnning')

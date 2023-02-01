@@ -51,7 +51,7 @@ const AccountSchema = new Schema({
     tasks: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'project'
+            ref: 'task'
         },
     ],
 })

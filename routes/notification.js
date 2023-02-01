@@ -7,19 +7,18 @@ const Notification = require("../models/Notification")
 
 
 router.post("/", verifyToken, async (req, res) => {
-    const { receiver, type, title, link, description, titleTimeline } = req.body
+    const { receiver, type, title, link, description } = req.body
 
     try {
         const notificationMessage = await Notification.find({ receiver, title, type: "message", seen: false })
-        if (titleTimeline) {
-            const newTitleTimeline = new TimelineDashboardSchema({ title: titleTimeline });
-            await newTitleTimeline.save();
-        }
-        if (notificationMessage.length == 0 && receiver!=req.userId) {
+        if (notificationMessage.length == 0 && receiver !== req.userId) {
             const newNotification = new Notification({ receiver, type, title, link, description });
             await newNotification.save();
-            res.status(200).json({ data: newNotification });
+            console.log(newNotification)
+            return res.status(200).json({ success: true, data: newNotification });
         }
+        res.status(200).json({ success: false });
+
     } catch (err) {
         res.status(500).json({ success: false, message: 'Internal server error' })
 

@@ -15,7 +15,7 @@ require('dotenv').config()
 
 router.get('/', verifyToken, async (req, res) => {
     try {
-        const user = await Account.findById(req.userId).select('-password')
+        const user = await Account.findById(req.userId).select('-password').populate("task")
         if (!user)
             return res.status(400).json({ success: false, message: 'Vui lòng nhập tên đăng nhập' })
         res.json({ success: true, user })
