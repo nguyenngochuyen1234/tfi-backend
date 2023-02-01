@@ -40,7 +40,7 @@ router.delete('/:idExercise', verifyToken, async (req, res) => {
 	try {
 		const idExercise = req.params.idExercise
 		const exerciseDeleteCondition = { _id: idExercise, user: req.userId }
-		await Task.updateMany({ exercise: idExercise }, { exercise: null, status:"uncompleted" });
+		await Task.updateMany({ exercise: idExercise }, { exercise: null, status:"uncomplete" });
 		const exerciseDelete = await Exercise.findOneAndDelete(exerciseDeleteCondition)
 
 		res.json({ success: true, exerciseDelete })
