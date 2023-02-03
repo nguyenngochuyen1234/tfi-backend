@@ -82,7 +82,13 @@ const connectDB = async () => {
 connectDB()
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }))
-app.use(cors())
+
+
+
+var corsOptions = {
+  origin: "https://tfi-git-main-nguyenngochuyen1234.vercel.app"
+};
+app.use(cors(corsOptions))
 app.use(morgan("common"))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ extended: false }))
