@@ -16,7 +16,7 @@ const { Server } = require("socket.io");
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: "https://tfi-4db4lci00-nguyenngochuyen1234.vercel.app",
+        origin: "https://tfi-git-main-nguyenngochuyen1234.vercel.app",
     }
 });
 require('dotenv').config()
