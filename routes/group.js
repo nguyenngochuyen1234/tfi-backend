@@ -119,7 +119,9 @@ router.patch('/:id', verifyToken, async (req, res) => {
 		let dataGroup = req.body
 		if (member.length > 0) {
 			for (let i = 0; i < member.length; i++) {
-				if (member[i] !== req.userId) {
+				let existMember = await Group.find({ member: { $in: [member] } })
+				console.log({ existMember })
+				if (member[i] !== req.userId && existMember.length === 0) {
 					let user = await Account.findById(member[i])
 					let newGroupRecently = new GroupRecently({
 						user: member[i], group: req.params.id
