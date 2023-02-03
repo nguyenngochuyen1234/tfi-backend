@@ -50,11 +50,11 @@ io.on('connection', (socket) => {
     })
     console.log(onlineUsers);
     socket.on("send-notification", (data) => {
-        if(data){
+        if (data) {
             let sendUserSocket = onlineUsers.get(data.receiver);
-            console.log({data})
+            console.log({ data })
             if (sendUserSocket) {
-                socket.to(sendUserSocket).emit("notification-recieve", {...data})
+                socket.to(sendUserSocket).emit("notification-recieve", { ...data })
             }
 
         }
@@ -86,15 +86,18 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 5
 
 
 var corsOptions = {
-  origin: "https://tfi-git-main-nguyenngochuyen1234.vercel.app"
+    origin: "https://tfi-git-main-nguyenngochuyen1234.vercel.app"
 };
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 app.use(cors(corsOptions))
 app.use(morgan("common"))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ extended: false }))
 
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json({ extended: false }))
 
 const upload = multer({
     storage: multer.memoryStorage()
@@ -124,19 +127,19 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 
     blobWriter.end(req.file.buffer)
 })
-app.post('/api/delete',async (req, res) => {
-    
-        try {
+app.post('/api/delete', async (req, res) => {
+
+    try {
         console.log(req.body.link)
-           const response= await firebase.bucket.deleteFile(req.body.link);
-           console.log(response)
-            res.status(200).send({ message: "Xóa thành công", success: true })
-        } catch (error) {
-            res.status(400).send({ message: "Xóa không thành công", success: false })
+        const response = await firebase.bucket.deleteFile(req.body.link);
+        console.log(response)
+        res.status(200).send({ message: "Xóa thành công", success: true })
+    } catch (error) {
+        res.status(400).send({ message: "Xóa không thành công", success: false })
 
-        }
+    }
 
-   
+
 })
 
 app.get("/", (req, res) => {
