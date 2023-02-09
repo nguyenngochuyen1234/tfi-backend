@@ -5,27 +5,32 @@ const Group = require('../models/Group')
 const Account = require('../models/Account')
 const GroupRecently = require('../models/GroupRecently')
 const Task = require('../models/Task')
+const PendingMember = require('../models/PendingMember')
 
 // @route GET api/group/join
 // @desc Get join group with Code
 // @access Private
-router.post('/join/:id', verifyToken, async (req, res) => {
+router.post('/join/:code', verifyToken, async (req, res) => {
 	try {
-		const idGroup = req.params.id
-		const group = await Group.findById(idGroup)
+		const group = await Group.findOne({code:req.params.code})
 		console.log(group)
 		if (group) {
 			if (group.member?.includes(req.userId)) {
 				res.json({ success: false, message: "Bạn đã có trong group" })
 			} else {
 				console.log({ members: group.member, user: req.userId })
-				await group.updateOne({ $push: { member: [req.userId] } })
-				let user = await Account.findById(req.userId)
-				await user.updateOne({ $push: { groupJoin: [idGroup] } })
-				let newGroupRecently = new GroupRecently({
-					user: req.userId, group: idGroup
-				})
-				await newGroupRecently.save()
+				const pendingMember = await PendingMember.findOne({group:group._id})
+				if(pendingMember){
+					await group.updateOne({ $push: { member: [req.userId] } })
+				}
+				else{
+					let newPendingMember = new PendingMember({
+						group: group._id, member:[req.userId]
+					})
+					await newPendingMember.save()
+				}
+				// let user = await Account.findById(req.userId)
+				// await user.updateOne({ $push: { groupJoin: [group._id] } })
 				res.json({ success: true, message: "join done !" })
 
 			}
@@ -66,6 +71,7 @@ router.get('/allGroupUser', verifyToken, async (req, res) => {
 // @desc Create post
 // @access Private
 router.post('/', verifyToken, async (req, res) => {
+
 	const { name, description, member } = req.body
 
 	// Simple validation

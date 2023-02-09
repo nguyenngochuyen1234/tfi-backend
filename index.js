@@ -34,6 +34,7 @@ const commentRouter = require('./routes/comment')
 const reactRouter = require('./routes/react')
 const exerciseRouter = require('./routes/exercise')
 const timelineDashboardRouter = require('./routes/timelineDashboard')
+const pendingMemberRouter = require('./routes/pendingMember')
 //-------------SOCKET.IO------------
 global.onlineUsers = new Map()
 io.on('connection', (socket) => {
@@ -86,7 +87,7 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 5
 
 
 var corsOptions = {
-    origin: "https://tfi-git-main-nguyenngochuyen1234.vercel.app"
+    origin: "http://localhost:3000"
 };
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -160,6 +161,7 @@ app.use('/api/comment', commentRouter)
 app.use('/api/react', reactRouter)
 app.use('/api/exercise', exerciseRouter)
 app.use('/api/timelineDashboard', timelineDashboardRouter)
+app.use('/api/pendingMember', pendingMemberRouter)
 
 httpServer.listen(8000, () => {
     console.log('Server is runnning')
