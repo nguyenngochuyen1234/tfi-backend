@@ -16,7 +16,7 @@ const { Server } = require("socket.io");
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: "https://tfi-git-main-nguyenngochuyen1234.vercel.app",
+        origin: "http://localhost:3000",
     }
 });
 require('dotenv').config()
@@ -86,15 +86,15 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 5
 
 
 
-var corsOptions = {
-    origin: "http://localhost:3000"
-};
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-app.use(cors(corsOptions))
+// var corsOptions = {
+//     origin: "http://localhost:3000"
+// };
+// app.use(function (req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+// });
+app.use(cors())
 app.use(morgan("common"))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ extended: false }))

@@ -12,30 +12,33 @@ const PendingMember = require('../models/PendingMember')
 // @access Private
 router.post('/join/:code', verifyToken, async (req, res) => {
 	try {
-		const group = await Group.findOne({code:req.params.code})
+		const group = await Group.findOne({ code: req.params.code })
 		console.log(group)
 		if (group) {
 			if (group.member?.includes(req.userId)) {
 				res.json({ success: false, message: "Bạn đã có trong group" })
 			} else {
-				console.log({ members: group.member, user: req.userId })
-				const pendingMember = await PendingMember.findOne({group:group._id})
-				if(pendingMember){
-					await group.updateOne({ $push: { member: [req.userId] } })
+				const pendingMember = await PendingMember.findOne({ group: group._id })
+				if (pendingMember) {
+					if (pendingMember.member?.includes(req.userId)) {
+						return res.json({ success: true, message: "Bạn đã gửi yêu cầu tham gia trước đó !" })
+					} else {
+						await pendingMember.updateOne({ $push: { member: [req.userId] } })
+					}
 				}
-				else{
+				else {
 					let newPendingMember = new PendingMember({
-						group: group._id, member:[req.userId]
+						group: group._id, member: [req.userId]
 					})
 					await newPendingMember.save()
 				}
 				// let user = await Account.findById(req.userId)
 				// await user.updateOne({ $push: { groupJoin: [group._id] } })
-				res.json({ success: true, message: "join done !" })
+				res.json({ success: true, message: "Gửi yêu cầu tham gia thành công !" })
 
 			}
 		} else {
-			res.json({ success: false, message: "Code error" })
+			res.json({ success: false, message: "Mã code không tồn tại" })
 		}
 	} catch (error) {
 		console.log(error)
@@ -125,9 +128,9 @@ router.patch('/:id', verifyToken, async (req, res) => {
 		let dataGroup = req.body
 		if (member.length > 0) {
 			for (let i = 0; i < member.length; i++) {
-				let existMember = await Group.find({ member: { $in: [member] } })
+				let existMember = await Group.findOne({ _id:req.params.id,member: { $in: [member] } })
 				console.log({ existMember })
-				if (member[i] !== req.userId && existMember.length === 0) {
+				if (member[i] !== req.userId && !existMember) {
 					let user = await Account.findById(member[i])
 					let newGroupRecently = new GroupRecently({
 						user: member[i], group: req.params.id

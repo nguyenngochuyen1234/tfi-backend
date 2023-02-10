@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const short = require('short-uuid');
-
-
+const ShortUniqueId = require('short-unique-id')
+const uid = new ShortUniqueId();
 const GroupSchema = new Schema({
     name: {
         type: String,
@@ -13,7 +13,7 @@ const GroupSchema = new Schema({
     },
     code: {
         type: String,
-        default:short.generate()
+        default:uid()
     },
     leader: {
         type: Schema.Types.ObjectId,
